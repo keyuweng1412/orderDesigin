@@ -1,9 +1,9 @@
 import React, {Component} from 'react'
 import 'antd/dist/antd.css';
 import {Select,Input,Button,List} from 'antd'
-// import store from '../store/index'
-import {connect} from 'react-redux'
 
+import {connect} from 'react-redux'
+import {SELECT_CHANGE,INPUT_CHANGE,BTN_CLICK,DELETE_ITEM} from '../actionTypes/actionTypes'
 const Option = Select.Option;
 
 var count = 0
@@ -16,7 +16,6 @@ class OrderM extends Component{
     
     render(){
         const {models,text,inputValue,list,sum} = this.props
-        // console.log(models);
         fruit = models[count].name;
         priceContent = text;
         inputV = inputValue;
@@ -42,8 +41,8 @@ class OrderM extends Component{
                 dataSource={list}
                 renderItem={(item,index)=>(<List.Item onClick={() => {this.props.deleItem(index)}}>{item}</List.Item>)}></List>
             </div>
-            <Button type='default' onClick={this.props.summation}>合计</Button>
-            <Button>{sum}</Button>
+            
+            <Button>{'合计'+ sum}</Button>
             </div>  
         )
     }
@@ -54,7 +53,7 @@ const mapStateToProps = (state) => {
         text: state.modelReducer.text,
         inputValue: state.listReducer.inputValue,
         list: state.listReducer.list,
-        sum:state.sumReducer.sum
+        sum:state.listReducer.sum
     }
 }
 
@@ -65,7 +64,7 @@ const mapDispatchToProps = (dispatch) => {
                 console.log(value);
                 count = value
                 const action = {
-                    type: 'select_change',
+                    type: SELECT_CHANGE,
                     value: count
                 }
                 dispatch(action)
@@ -74,7 +73,7 @@ const mapDispatchToProps = (dispatch) => {
             //   输入框改变
             handleInputChange(e){
                 const action = {
-                    type:'input_change',
+                    type:INPUT_CHANGE,
                     value: e.target.value
                 }
                 dispatch(action)
@@ -82,7 +81,7 @@ const mapDispatchToProps = (dispatch) => {
             // 点击提交
             clickBtn(){
                 const action = {
-                    type: 'btn_click',
+                    type: BTN_CLICK,
                     data:{fruit,priceContent,inputV}
                 }
                 dispatch(action)
@@ -91,19 +90,12 @@ const mapDispatchToProps = (dispatch) => {
             deleItem (index) {
             console.log(index);
                 const action = {
-                    type: 'delete_item',
+                    type: DELETE_ITEM,
                     index: index
                 }
                 dispatch(action)
             },
-            // 合计
-            summation(){
-                const action = {
-                    type: 'btn_sum',
-                    data:{priceContent,inputV}
-                }
-                dispatch(action)
-            }
+
 
 
         }

@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux'
-
+import {SELECT_CHANGE,INPUT_CHANGE,BTN_CLICK,DELETE_ITEM} from '../actionTypes/actionTypes'
 const modelState = {
     models:[{id:'0',name:'苹果',price:11},
            {id:'1',name:'香蕉',price:12},
@@ -10,16 +10,14 @@ const modelState = {
 
 const listState = {
     inputValue:'',
-    list: []
+    list: [],
+    sum:0
 }
 
-const sumState = {
-    sum: 0
-}
 
 export const modelReducer=(state=modelState, action) => {
     switch(action.type){
-        case 'select_change':
+        case SELECT_CHANGE:
         return {...state, text: state.models[action.value].price}
         default:
         return state
@@ -30,13 +28,11 @@ export const modelReducer=(state=modelState, action) => {
 
 function listReducer (state = listState, action){
     switch(action.type){
-        case 'input_change':{
-            const newState = JSON.parse(JSON.stringify(state))
-            newState.inputValue = action.value
-            return newState
+        case INPUT_CHANGE:{
+            return {...state, inputValue:action.value}
         }
         
-        case 'btn_click':{
+        case BTN_CLICK:{
             const newState = JSON.parse(JSON.stringify(state))
             if(!newState.inputValue){
                 alert('数量不能为空')
@@ -53,11 +49,11 @@ function listReducer (state = listState, action){
                         '数量:' + inputV + ',' + 
                         '总价:' + priceContent*inputV
             newState.list.push(str)
-
-            // newState.inputValue = ''
+            newState.sum += priceContent*inputV
+            newState.inputValue = ''
             return newState
         }
-        case 'delete_item':{
+        case DELETE_ITEM:{
             const newState = JSON.parse(JSON.stringify(state))
             if(window.confirm('你确定删除吗？')){
                 newState.list.splice(action.index, 1)
@@ -69,18 +65,9 @@ function listReducer (state = listState, action){
     }
 }
 
-function sumReducer(state=sumState, action){
-    switch(action.type){
-        case 'btn_sum':
-        const {priceContent, inputV} = action.data
-        return {...state, sum:state.sum += priceContent*inputV}
-        default:
-        return state
-    }
-}
 
 export default combineReducers({
     modelReducer,
     listReducer,
-    sumReducer
+    
 })
