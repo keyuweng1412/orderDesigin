@@ -7,18 +7,18 @@ import {SELECT_CHANGE,INPUT_CHANGE,BTN_CLICK,DELETE_ITEM} from '../actionTypes/a
 const Option = Select.Option;
 
 var count = 0
-var fruit = ''
-var priceContent = ''
-var inputV = 0
+// var fruit = ''
+// var priceContent = ''
+// var inputV = 0
 
 
 class OrderM extends Component{
     
     render(){
         const {models,text,inputValue,list,sum} = this.props
-        fruit = models[count].name;
-        priceContent = text;
-        inputV = inputValue;
+        // fruit = models[count].name;
+        // priceContent = text;
+        // inputV = inputValue;
         return(
             <div>
             <Select
@@ -34,12 +34,16 @@ class OrderM extends Component{
                 value={inputValue} onChange={this.props.handleInputChange}
                 placeholder="Please input with a number" 
                 allowClear />
-            <Button type="primary" style={{marginLeft:'3px'}} onClick={this.props.clickBtn}>订购</Button>
+            <Button type="primary" style={{marginLeft:'3px'}} onClick={()=>{this.props.clickBtn(models[count].name, text, inputValue)}}>订购</Button>
             <div>
                 <List style={{marginTop:'10px', width:'430px'}}
                 bordered
                 dataSource={list}
-                renderItem={(item,index)=>(<List.Item onClick={() => {this.props.deleItem(index)}}>{item}</List.Item>)}></List>
+                renderItem={(item,index)=>(
+                <List.Item onClick={() => {this.props.deleItem(index,list)}}>
+                {item.fruitName + "--" + item.unitPrice + "--" + item.count + "--" + item.tatalPrice}
+                </List.Item>)}>
+                </List>
             </div>
             
             <Button>{'合计'+ sum}</Button>
@@ -79,19 +83,24 @@ const mapDispatchToProps = (dispatch) => {
                 dispatch(action)
             },
             // 点击提交
-            clickBtn(){
+            clickBtn(name,price,count){
                 const action = {
                     type: BTN_CLICK,
-                    data:{fruit,priceContent,inputV}
+                    name:name,
+                    price:price,
+                    count:count,
+                    total:price*count
+                    // data:{fruit,priceContent,inputV}
                 }
                 dispatch(action)
             },
             // 删除
-            deleItem (index) {
+            deleItem (index,list) {
             console.log(index);
                 const action = {
                     type: DELETE_ITEM,
-                    index: index
+                    index: index,
+                    list:list
                 }
                 dispatch(action)
             },

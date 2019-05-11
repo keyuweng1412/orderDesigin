@@ -10,6 +10,7 @@ const modelState = {
 
 const listState = {
     inputValue:'',
+    listDic:{fruitName:'',unitPrice: 0,count:0,tatalPrice:0},
     list: [],
     sum:0
 }
@@ -43,13 +44,18 @@ function listReducer (state = listState, action){
                 newState.inputValue = ''
                 return newState
             }
-            const {fruit, priceContent,inputV} = action.data
-            const str = '商品名:' + fruit + ',' + 
-                        '单价:' + priceContent + ',' + 
-                        '数量:' + inputV + ',' + 
-                        '总价:' + priceContent*inputV
-            newState.list.push(str)
-            newState.sum += priceContent*inputV
+            // const {fruit, priceContent,inputV} = action.data
+            newState.listDic.fruitName = action.name
+            newState.listDic.unitPrice = action.price
+            newState.listDic.count = action.count
+            newState.listDic.tatalPrice = action.total
+            // const str = '商品名:' + fruit + ',' + 
+            //             '单价:' + priceContent + ',' + 
+            //             '数量:' + inputV + ',' + 
+            //             '总价:' + priceContent*inputV
+            newState.list.push(newState.listDic)
+            // newState.sum += priceContent*inputV
+            newState.sum += action.total
             newState.inputValue = ''
             return newState
         }
@@ -57,6 +63,9 @@ function listReducer (state = listState, action){
             const newState = JSON.parse(JSON.stringify(state))
             if(window.confirm('你确定删除吗？')){
                 newState.list.splice(action.index, 1)
+                
+                newState.sum -= action.list[action.index].tatalPrice
+                
             }
             return newState
         }
